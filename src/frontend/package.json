@@ -1,5 +1,5 @@
 {
-  "name": "auca-numericals-template",
+  "name": "poisson-equation-solver",
   "private": true,
   "version": "0.0.0",
   "type": "module",

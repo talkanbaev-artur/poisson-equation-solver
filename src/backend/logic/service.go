@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 
-	"github.com/talkanbaev-artur/auca-numericals-template/src/backend/logic/model"
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/logic/model"
 )
 
 type APIService interface {

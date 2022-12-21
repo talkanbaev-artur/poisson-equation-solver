@@ -12,9 +12,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
-	"github.com/talkanbaev-artur/auca-numericals-template/src/backend/config"
-	"github.com/talkanbaev-artur/auca-numericals-template/src/backend/logic"
-	"github.com/talkanbaev-artur/auca-numericals-template/src/backend/server"
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/config"
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/logic"
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/server"
 )
 
 func main() {
@@ -22,7 +22,6 @@ func main() {
 	lg := logrus.New()
 	config.Init()
 
-	//REPLACE BY REAL SERVICE
 	s := logic.NewAPIService()
 
 	r := mux.NewRouter()

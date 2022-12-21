@@ -10,8 +10,8 @@ import (
 	transp "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
-	"github.com/talkanbaev-artur/auca-numericals-template/src/backend/endpoints"
-	"github.com/talkanbaev-artur/auca-numericals-template/src/backend/logic"
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/endpoints"
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/logic"
 )
 
 type errMsg struct {

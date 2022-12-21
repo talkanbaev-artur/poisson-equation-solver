@@ -5,8 +5,9 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/log"
-	"github.com/talkanbaev-artur/auca-numericals-template/src/backend/logic"
-	"github.com/talkanbaev-artur/auca-numericals-template/src/backend/util"
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/logic"
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/logic/model"
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/util"
 )
 
 type Endpoints struct {

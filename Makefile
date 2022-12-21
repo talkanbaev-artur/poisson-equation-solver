@@ -1,4 +1,4 @@
-NAME=template
+NAME=poisson-equation-solver
 VERSION=0.0.0
 
 TARGET_OS=linux windows darwin
