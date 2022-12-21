@@ -1,4 +1,4 @@
-const apiEndpoint = "http://localhost:8000"; //leave empty for prod
+const apiEndpoint = ""; //leave empty for prod
 
 import axios from "axios";
 
@@ -7,20 +7,20 @@ const getTasks = () => {
 };
 
 const getSchemas = () => {
-    return axios.get(apiEndpoint + "/schemas")
-}
+  return axios.get(apiEndpoint + "/schemas");
+};
 
 const cleanParams = (params) => {
-  let p = {}
-  p.n = parseInt(params.n)
-  p.theta = parseFloat(params.theta)
-  p.tau = parseFloat(params.tau)
+  let p = {};
+  p.n = parseInt(params.n);
+  p.theta = parseFloat(params.theta);
+  p.tau = parseFloat(params.tau);
   p.task = params.task;
   return p;
-}
+};
 
-const solve = (p)=>{
-  return axios.post(apiEndpoint+"/solve", p)
-}
+const solve = (p) => {
+  return axios.post(apiEndpoint + "/solve", p);
+};
 
 export { getSchemas, getTasks, cleanParams, solve };

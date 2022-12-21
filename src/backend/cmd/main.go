@@ -7,6 +7,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"runtime"
 	"syscall"
 	"time"
@@ -29,6 +30,9 @@ func main() {
 	r := mux.NewRouter()
 	server.MakeMuxRoutes(s, r, lg)
 	r.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
+	path, _ := os.Getwd()
+	path = filepath.Join(path, "frontend")
+	server.AttachSPA(r, path, "index.html")
 	go func() {
 		c := cors.New(cors.Options{AllowedOrigins: []string{"*"}, AllowedMethods: []string{"POST", "GET", "OPTIONS"}})
 		srv := http.Server{
