@@ -2,14 +2,16 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/logic/algorithm"
 	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/logic/funcs"
 	"github.com/talkanbaev-artur/poisson-equation-solver/src/backend/logic/model"
 )
 
 type APIService interface {
 	GetNumericals(ctx context.Context) []model.Numericals
-	Solve(ctx context.Context, params model.SolutionParameters) (model.SolutionData, error)
+	Solve(ctx context.Context, params model.SolutionParameters) (*model.SolutionData, error)
 	GetTasks(ctx context.Context) []model.Task
 	GetSchemas(ctx context.Context) []model.Schema
 }
@@ -29,9 +31,12 @@ func (s service) GetNumericals(ctx context.Context) []model.Numericals {
 	return nums
 }
 
-func (s service) Solve(ctx context.Context, params model.SolutionParameters) (model.SolutionData, error) {
-	d := model.SolutionData{Solution: make([][]float64, 0)}
-	d.Solution = append(d.Solution, []float64{1, 2, 3}, []float64{1, 2, 3}, []float64{1, 2, 3})
+func (s service) Solve(ctx context.Context, params model.SolutionParameters) (*model.SolutionData, error) {
+	task, err := funcs.GetTask(params.TaskID, params.AdditionalParameters)
+	if err != nil {
+		return nil, fmt.Errorf("invalid params for task: %s", err.Error())
+	}
+	d := algorithm.Solve(task, params)
 	return d, nil
 }
 

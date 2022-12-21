@@ -16,10 +16,11 @@ type SolutionParameters struct {
 }
 
 type SolutionData struct {
-	Error          float64     `json:"err"`
-	Sigma          float64     `json:"sigma"`
-	IterationCount int         `json:"k"`
-	Solution       [][]float64 `json:"data"`
+	Error          float64       `json:"err"`
+	Sigma          float64       `json:"sigma"`
+	IterationCount int           `json:"k"`
+	Solution       [][][]float64 `json:"data"`
+	Orginal        [][]float64   `json:"original"`
 }
 
 type Schema struct {
