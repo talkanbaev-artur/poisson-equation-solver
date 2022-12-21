@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	"time"
 
@@ -26,6 +28,7 @@ func main() {
 
 	r := mux.NewRouter()
 	server.MakeMuxRoutes(s, r, lg)
+	r.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
 	go func() {
 		c := cors.New(cors.Options{AllowedOrigins: []string{"*"}, AllowedMethods: []string{"POST", "GET", "OPTIONS"}})
 		srv := http.Server{
@@ -45,6 +48,19 @@ func main() {
 		<-c
 		lg.Info("Catched shutdown signal - initiating graceful shutdown")
 		cancel()
+	}()
+
+	go func() {
+		t := time.NewTicker(time.Second)
+		for {
+			select {
+			case <-t.C:
+				runtime.GC()
+			case <-c:
+				t.Stop()
+				return
+			}
+		}
 	}()
 
 	lg.Info("Initialised numericals application")
