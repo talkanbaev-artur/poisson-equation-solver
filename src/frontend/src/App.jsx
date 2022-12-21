@@ -1,49 +1,70 @@
-import { useEffect, useState } from "react";
-import api from "./api";
-import { TimePlot, createDataSet } from "./components/time_chart";
+import { createEffect, createMemo, createSignal, onMount } from "solid-js"
+import { cleanParams, solve } from "./api/api";
+import Params from "./components/parameters";
+import Chart2D from "./components/2dchart";
+import { createAxis, getHalfYValues, getHalfXValues } from "./api/charts";
+import Chart3D from "./components/3dchart";
+
+export default function App() {
 
 
-function App() {
-
-  const [backendData, setBackendData] = useState(null);
-
-  useEffect(() => {
-    const func = async () => {
-      var data = await api.getTypes();
-      if (data.status == 200) {
-        setBackendData(data.data);
-      };
+    const [params, setParams] = createSignal({ n: 10, tau: 1, theta: 0, task: 2 }, { equals: false })
+    const [error, serError] = createSignal(0);
+    const [solution, setSolution] = createSignal(null);
+    const f = async () => {
+        let data = await solve(cleanParams(params()));
+        setSolution(data.data);
+        setK(0);
+        let l = setInterval(() => {
+            (k() + 1 < data.data.k - 1) ? setK(k() + 1) : null
+            if (k() + 1 >= data.data.k - 1) {
+                clearInterval(l);
+                console.log("stop");
+            }
+        }, 100);
     }
-    func()
-    return () => { }
-  }, []);
+    onMount(f)
+    createEffect(f)
 
+    const [k, setK] = createSignal(1);
 
-  const getData = (c) => {
-    var x = [];
-    var y = [];
-    for (let i = 0; i < 100; i++) {
-      x[i] = i * 0.1;
-      y[i] = x[i] ** Math.E + c;
-    }
-    return [x, y]
-  }
+    const axis = createMemo(() => createAxis(parseInt(params().n)))
 
-  const [x, y] = getData(1)
+    const a = createMemo(() => solution() ? [getHalfYValues(solution().data[k()], axis(), "num"), getHalfYValues(solution().original, axis(), "org")] : [])
+    const b = createMemo(() => solution() ? [getHalfXValues(solution().data[k()], axis(), "num"), getHalfXValues(solution().original, axis(), "org")] : [])
 
-
-  var data = [createDataSet(x, y, "original", "rgb(255,10,10)")]
-  return (
-    <div className="">
-      <div className="w-3/4">
-        {JSON.stringify(backendData)}
-        {TimePlot(data, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24], (cur) => {
-          const [x, y] = getData(cur);
-          return [createDataSet(x, y, "original", "rgb(255,10,10)")]
-        })}
-      </div>
+    return <div className="flex">
+        <div className="flex mx-8 my-6">
+            <div className="flex mr-auto flex-col p-4">
+                <h2 className="text-3xl font-bold mb-2">Poisson equation solver</h2>
+                <p>Made by Talkanbaev Artur</p>
+                <div className="mt-8">
+                    <h3 className="font-bold text-lg mb-2">Manual</h3>
+                    <p>1. Edit parameters - use the arrows or write the number down</p>
+                    <p>2. Use mouse and wheel to navigate the graph</p>
+                    <p>3. Hower over graphs to see values</p>
+                </div>
+                <Params value={params} setter={setParams} />
+                <div className="flex flex-col my-6 space-y-4">
+                    <h4 className="font-bold text-lg">Error values</h4>
+                    <p>Error: {solution() ? solution().err : 0}</p>
+                    <p>Sigma: {solution() ? solution().sigma : 0}</p>
+                    <p>Iterations: {solution() ? solution().k : 0}</p>
+                </div>
+            </div>
+        </div>
+        <div className="flex flex-col flex-1 p-10 border">
+            <p>Showing iteration: {k() + 2}</p>
+            <div className="flex">
+                <div>
+                    <Chart2D title={"Y=0.5 chart"} data={a} />
+                    {JSON.stringify(a)}
+                </div>
+                <div>
+                    <Chart2D title={"X=0.5 chart"} data={b} />
+                </div>
+            </div>
+            <Chart3D data={solution() ? [{ z: solution().data[solution().k - 1], x: axis(), y: axis(), type: "surface" }] : []} axis={axis()} />
+        </div>
     </div>
-  )
 }
-
-export default App
